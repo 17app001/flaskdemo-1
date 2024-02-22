@@ -24,7 +24,7 @@
 
         .price {
             font-weight: bold;
-            font-size: 24px;
+            font-size: 20px;
         }
     </style>
 </head>
@@ -35,7 +35,7 @@
     <div class="book">
         <h2 class="title">{{books[id]["name"]}}</h2>
         <p class="price">價格:
-            <span>${{books[id]["price"]}}</span>
+            <span style="font-size: 16px;color: red; font-weight: 100;">${{books[id]["price"]}}</span>
         </p>
         <img src="{{books[id]['image_url']}}" alt="">
         <hr>
