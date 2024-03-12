@@ -5,6 +5,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 df = None
 url = "https://data.moenv.gov.tw/api/v2/aqx_p_02?api_key=e8dd42e6-9b8b-43f8-991e-b3dee723a52d&limit=1000&sort=datacreationdate%20desc&format=CSV"
+six_countys = ["臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市"]
 
 
 def get_pm25():
@@ -16,9 +17,19 @@ def get_pm25():
     return columns, values
 
 
+def get_county_pm25(county):
+    global df
+    if df is None:
+        df = pd.read_csv(url).dropna()
+    df1 = df.groupby("county").get_group(county)
+    columns = df1.columns.tolist()
+    values = df1.values.tolist()
+
+    return columns, values
+
+
 def get_six_pm25():
     global df
-    six_countys = ["臺北市", "新北市", "桃園市", "臺中市", "臺南市", "高雄市"]
 
     if df is None:
         df = pd.read_csv(url).dropna()
@@ -31,4 +42,4 @@ def get_six_pm25():
 
 
 if __name__ == "__main__":
-    print(get_six_pm25())
+    print(get_county_pm25("臺北市"))
