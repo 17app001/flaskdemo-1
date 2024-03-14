@@ -15,6 +15,12 @@ $("#select_county").change(() => {
     drawCountyPM25(county);
 });
 
+window.onresize = function () {
+    chart1.resize();
+    chart2.resize();
+    chart3.resize();
+};
+
 // 呼叫後端資料跟繪製
 drawPM25();
 
@@ -26,9 +32,12 @@ function drawCountyPM25(county) {
             type: "GET",
             dataType: "json",
             success: (result) => {
-                //繪製對應區塊並給予必要參數
-                drawChat(chart3, county, "PM2.5", result["site"], result["pm25"]);
-                chart3.hideLoading();
+                this.setTimeout(() => {
+                    //繪製對應區塊並給予必要參數
+                    drawChat(chart3, county, "PM2.5", result["site"], result["pm25"], "#32cd32");
+                    chart3.hideLoading();
+                }, 1000);
+
             },
             error: () => {
                 alert("讀取資料失敗，請稍後在試!");
@@ -47,9 +56,11 @@ function drawSixPM25() {
             type: "GET",
             dataType: "json",
             success: (result) => {
-                //繪製對應區塊並給予必要參數
-                drawChat(chart2, "六都PM2.5平均值", "PM2.5", result["site"], result["pm25"]);
-                chart2.hideLoading();
+                this.setTimeout(() => {
+                    //繪製對應區塊並給予必要參數
+                    drawChat(chart2, "六都PM2.5平均值", "PM2.5", result["site"], result["pm25"], "#4b0082");
+                    chart2.hideLoading();
+                }, 1000);
             },
             error: () => {
                 alert("讀取資料失敗，請稍後在試!");
@@ -74,13 +85,11 @@ function drawPM25() {
                     $("#pm25_low_site").text(result["lowest"]["site"]);
                     $("#pm25_low_value").text(result["lowest"]["pm25"]);
                     //繪製對應區塊並給予必要參數
-                    drawChat(chart1, result["datetime"], "PM2.5", result["site"], result["pm25"]);
+                    drawChat(chart1, result["datetime"], "PM2.5", result["site"], result["pm25"], "orange");
                     chart1.hideLoading();
-                    this.setTimeout(() => {
-                        //繪製六都平均值
-                        drawSixPM25();
-                        drawCountyPM25("彰化縣");
-                    }, 1000);
+                    //繪製六都平均值
+                    drawSixPM25();
+                    drawCountyPM25("彰化縣");
                 }, 1000);
             },
             error: () => {
@@ -91,7 +100,7 @@ function drawPM25() {
     )
 }
 
-function drawChat(chart, title, legend, xData, yData) {
+function drawChat(chart, title, legend, xData, yData, color = '#a90000') {
     let option = {
         title: {
             text: title
@@ -108,7 +117,10 @@ function drawChat(chart, title, legend, xData, yData) {
             {
                 name: legend,
                 type: 'bar',
-                data: yData
+                data: yData,
+                itemStyle: {
+                    color: color
+                }
             }
         ]
     };
